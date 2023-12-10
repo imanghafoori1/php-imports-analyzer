@@ -26,9 +26,8 @@ if (isset($GLOBALS['_composer_autoload_path'])) {
     unset($file);
 }
 
-require_once __DIR__.'/vendor/autoload.php';
-require_once COMPOSER_INSTALL;
 function base_path() {
+    $comp = '';
     if (file_exists(getcwd().'/../../../composer.json')) {
         $comp = getcwd().'/../../..';
     } elseif (file_exists(getcwd().'/composer.json')) {
@@ -38,6 +37,9 @@ function base_path() {
 
     return $comp;
 }
+
+require_once base_path().'/vendor/autoload.php';
+require_once COMPOSER_INSTALL;
 
 \Imanghafoori\ImportAnalyzer\Analyzers\ComposerJson::$composer = function () {
     $comp = FilePath::$basePath = base_path();
