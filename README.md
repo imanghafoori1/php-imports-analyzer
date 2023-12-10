@@ -24,3 +24,4 @@ and cd into your project root folder and run it by the command below:
 ```
 check_imports
 ```
+![image](https://github.com/imanghafoori1/php-imports-analyzer/assets/6961695/7c68c4bd-ceb8-4c6e-be42-8539ad83d40a)
