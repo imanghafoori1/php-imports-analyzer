@@ -1,0 +1,35 @@
+{
+  "name": "imanghafoori/php-imports-analyzer",
+  "description": "A command line tool to scan for extra or wrong use statements in composer based apps.",
+  "keywords": [
+    "php-import-analyzer",
+    "ci-cd"
+  ],
+  "homepage": "https://github.com/imanghafoori1/php-imports-analyzer",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Iman",
+      "email": "imanghafoori1@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "symfony/finder": "4.*|5.*|6.*|7.*|8.*|9.*",
+    "symfony/console": "4.*|5.*|6.*",
+    "imanghafoori/php-token-analyzer" : "^0.1.55",
+    "imanghafoori/composer-json" : "1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Imanghafoori\\ImportAnalyzer\\" : "src"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0",
+    "symfony/var-dumper" : "3.*|4.*|5.*"
+  },
+  "bin": ["check_imports"]
+}

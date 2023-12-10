@@ -1,0 +1,63 @@
+<?php
+
+use Imanghafoori\ImportAnalyzer\ErrorReporters\ErrorPrinter;
+use Imanghafoori\ImportAnalyzer\CheckImportReporter;
+use Imanghafoori\ImportAnalyzer\CheckClassReferencesAreValid;
+use Imanghafoori\ImportAnalyzer\Handlers\PrintWrongClassRefs;
+use Imanghafoori\ImportAnalyzer\FileReaders\FilePath;
+use Imanghafoori\ImportAnalyzer\ForPsr4LoadedClasses;
+use Imanghafoori\TokenAnalyzer\ParseUseStatement;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+
+if (isset($GLOBALS['_composer_autoload_path'])) {
+    define('COMPOSER_INSTALL', $GLOBALS['_composer_autoload_path']);
+
+    unset($GLOBALS['_composer_autoload_path']);
+} else {
+    foreach ([__DIR__.'/../../autoload.php', __DIR__.'/../vendor/autoload.php', __DIR__.'/vendor/autoload.php'] as $file) {
+        if (file_exists($file)) {
+            define('COMPOSER_INSTALL', $file);
+
+            break;
+        }
+    }
+
+    unset($file);
+}
+
+require_once __DIR__.'/vendor/autoload.php';
+require_once COMPOSER_INSTALL;
+function base_path() {
+    if (file_exists(getcwd().'/../../../composer.json')) {
+        $comp = getcwd().'/../../..';
+    } elseif (file_exists(getcwd().'/composer.json')) {
+        // for dev
+        $comp = getcwd();
+    }
+
+    return $comp;
+}
+
+\Imanghafoori\ImportAnalyzer\Analyzers\ComposerJson::$composer = function () {
+    $comp = FilePath::$basePath = base_path();
+
+    return \ImanGhafoori\ComposerJson\ComposerJson::make($comp);
+};
+
+
+CheckClassReferencesAreValid::$wrongClassRefsHandler = PrintWrongClassRefs::class;
+$psr4Stats = ForPsr4LoadedClasses::check([CheckClassReferencesAreValid::class], function ($tokens) {
+    $imports = ParseUseStatement::parseUseStatements($tokens);
+
+    return $imports[0] ?: [$imports[1]];
+});
+
+$output = new ConsoleOutput();
+ErrorPrinter::singleton($output)->logErrors();
+
+$output->writeln(CheckImportReporter::totalImportsMsg());
+$output->writeln(CheckImportReporter::printPsr4($psr4Stats));
+$output->writeln(CheckImportReporter::printErrorsCount());
+
+return count(ErrorPrinter::singleton($output)->errorsList) === 0 ? 0 : 1;
