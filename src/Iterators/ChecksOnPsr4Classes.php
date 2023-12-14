@@ -70,7 +70,7 @@ class ChecksOnPsr4Classes
         try {
             return $check::check($tokens, $absFilePath, $params1, $phpFilePath, $psr4Path, $psr4Namespace);
         } catch (Throwable $exception) {
-            self::$exceptions[] = $exception;
+            self::$exceptions[] = [$exception, $absFilePath];
         }
     }
 }

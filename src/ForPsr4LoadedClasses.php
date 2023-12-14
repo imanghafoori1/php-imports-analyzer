@@ -41,8 +41,10 @@ class ForPsr4LoadedClasses
 
     private static function handleClassNotFound($e)
     {
+        [$e, $filePath] = $e;
+
         if (! self::entityNotFound($e->getMessage())) {
-            ErrorPrinter::singleton()->simplePendError($e->getMessage(), $e->getFile(), $e->getLine(), 'error', get_class($e));
+            ErrorPrinter::singleton()->simplePendError($e->getMessage(), $filePath, 1, 'error', get_class($e));
         }
     }
 }
