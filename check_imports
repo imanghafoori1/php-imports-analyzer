@@ -62,4 +62,6 @@ $output->writeln(CheckImportReporter::totalImportsMsg());
 $output->writeln(CheckImportReporter::printPsr4($psr4Stats));
 $output->writeln(CheckImportReporter::printErrorsCount());
 
-return count(ErrorPrinter::singleton($output)->errorsList) === 0 ? 0 : 1;
+$code = count(ErrorPrinter::singleton($output)->errorsList) === 0 ? 0 : 1;
+
+exit($code);
