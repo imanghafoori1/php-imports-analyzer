@@ -1,26 +1,29 @@
 # PHP Imports Analyzer
 
-A command line tool to scan and reveal extra or wrong use statements in your composer-based PHP application written in PHP.
-This is particularly useful when you want to scan your open-source packages.
+
+A command line utility designed to scan your composer-based PHP applications 
+and identify unnecessary or incorrect use statements. 
+This tool is especially beneficial for examining your open-source packages, 
+ensuring they adhere to optimal coding standards.
 
 ### Install:
 ```
 composer require imanghafoori/php-imports-analyzer --dev
 ```
 
-Or you can install it globally:
+Alternatively, you have the option to install it globally:
 
 ```bash
 composer global require imanghafoori/php-imports-analyzer
 ```
 
-### usage:
+### Usage:
 
 ```
 ./vendor/bin/check_imports
 ```
 
-and cd into your project root folder and run it by the command below:
+Navigate to your project's root directory and run the following command:
 ```
 check_imports
 ```
