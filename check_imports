@@ -1,11 +1,15 @@
 <?php
 
+use Imanghafoori\ImportAnalyzer\Analyzers\ComposerJson;
 use Imanghafoori\ImportAnalyzer\ErrorReporters\ErrorPrinter;
-use Imanghafoori\ImportAnalyzer\CheckImportReporter;
+use Imanghafoori\ImportAnalyzer\Psr4Report;
 use Imanghafoori\ImportAnalyzer\CheckClassReferencesAreValid;
 use Imanghafoori\ImportAnalyzer\Handlers\PrintWrongClassRefs;
 use Imanghafoori\ImportAnalyzer\FileReaders\FilePath;
 use Imanghafoori\ImportAnalyzer\ForPsr4LoadedClasses;
+use Imanghafoori\ImportAnalyzer\Reporters\CheckImportReporter;
+use Imanghafoori\ImportAnalyzer\Reporters\SummeryReport;
+use Imanghafoori\TokenAnalyzer\ImportsAnalyzer;
 use Imanghafoori\TokenAnalyzer\ParseUseStatement;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -41,7 +45,7 @@ function base_path() {
 require_once base_path().'/vendor/autoload.php';
 require_once COMPOSER_INSTALL;
 
-\Imanghafoori\ImportAnalyzer\Analyzers\ComposerJson::$composer = function () {
+ComposerJson::$composer = function () {
     $comp = FilePath::$basePath = base_path();
 
     return \ImanGhafoori\ComposerJson\ComposerJson::make($comp);
@@ -56,10 +60,23 @@ $psr4Stats = ForPsr4LoadedClasses::check([CheckClassReferencesAreValid::class], 
 });
 
 $output = new ConsoleOutput();
-ErrorPrinter::singleton($output)->logErrors();
 
-$output->writeln(CheckImportReporter::totalImportsMsg());
-$output->writeln(CheckImportReporter::printPsr4($psr4Stats));
-$output->writeln(CheckImportReporter::printErrorsCount());
+$output->writeln('');
+$output->writeln('<fg=green>Checking imports and class references...</>');
+
+$errorPrinter = ErrorPrinter::singleton($output);
+$refCount = ImportsAnalyzer::$checkedRefCount;
+$errorPrinter->logErrors();
+
+$messages = [];
+$messages[] = CheckImportReporter::totalImportsMsg($refCount);
+$messages[] = Psr4Report::printPsr4($psr4Stats);
+$messages[] = SummeryReport::summery($errorPrinter->errorsList);
+
+if (! $refCount) {
+    $messages = ['<options=bold;fg=yellow>No imports were found!</>'];
+}
+
+$output->writeln(implode(PHP_EOL, array_filter($messages)));
 
 return count(ErrorPrinter::singleton($output)->errorsList) === 0 ? 0 : 1;
