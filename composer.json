@@ -17,8 +17,8 @@
   ],
   "require": {
     "php": ">=7.1.3",
-    "symfony/finder": "4.*|5.*|6.*|7.*|8.*|9.*",
-    "symfony/console": "4.*|5.*|6.*|7.*",
+    "symfony/finder": ">=4.0",
+    "symfony/console": ">=4.0",
     "imanghafoori/php-token-analyzer" : "^0.1.61",
     "imanghafoori/composer-json" : "^2.0.0"
   },
@@ -28,8 +28,8 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0",
-    "symfony/var-dumper" : "3.*|4.*|5.*"
+    "phpunit/phpunit": ">=6.0",
+    "symfony/var-dumper" : ">=3.0"
   },
   "bin": ["check_imports"]
 }
